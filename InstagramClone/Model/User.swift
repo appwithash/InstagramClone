@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import FirebaseFirestore
 class User : ObservableObject{
     @Published var username : String = ""
     @Published var password : String = ""
@@ -21,5 +21,25 @@ class User : ObservableObject{
     @Published var userTaggedPostList  : [Post] = []
     @Published var followerList  : [User] = []
     @Published var followingList  : [User] = []
+    @Published var isLoading : Bool = false
+    @Published var status : Bool = false
     
+    func signIn(){
+        let db = Firestore.firestore()
+        self.isLoading=true
+        db.collection("Users").addDocument(data: [
+            "username" : self.username,
+            "password" : self.password,
+            "fullName" : self.fullName,
+            "email" : self.email,
+            "bio" : self.bio,
+        ]) { error in
+            if error != nil{
+                print(error!.localizedDescription)
+            }else{
+                self.isLoading=false
+                self.status=true
+            }
+        }
+    }
 }
