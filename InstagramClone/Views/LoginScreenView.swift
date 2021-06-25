@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct LoginScreenView: View {
-    @State private var username : String = ""
-    @State private var password : String = ""
-    @State private var goToHomeScreen = false
+    @EnvironmentObject var currentUser : User
+    
     var body: some View {
         ZStack{
         NavigationView{
@@ -26,7 +25,8 @@ struct LoginScreenView: View {
                     RoundedRectangle(cornerRadius: 8)
                         .stroke(Color.gray,lineWidth:1)
                         .frame(width: Screen.maxWidth*0.9, height: Screen.maxHeight*0.055, alignment: .center)
-                    TextField("Phone number ,email or username",text: $username)
+                    TextField("Phone number ,email or username",text: $currentUser.email)
+                        
                         .textCase(.lowercase)  .font(.system(size: 14))
                         .padding()
                         .frame(width: Screen.maxWidth*0.9, height: Screen.maxHeight*0.055, alignment: .center)
@@ -36,22 +36,23 @@ struct LoginScreenView: View {
                     RoundedRectangle(cornerRadius: 8)
                         .stroke(Color.gray,lineWidth:1)
                         .frame(width: Screen.maxWidth*0.9, height: Screen.maxHeight*0.055, alignment: .center)
-                SecureField("password",text: $password)  .font(.system(size: 14))
+                    SecureField("password",text: $currentUser.password)  .font(.system(size: 14))
                     .padding()
                     .frame(width: Screen.maxWidth*0.9, height: Screen.maxHeight*0.05, alignment: .center)
                 }
-                NavigationLink(
-                    destination: TabContainerView(),
-                    isActive: $goToHomeScreen){
-                Button(action: {
-                    self.goToHomeScreen=true
-                }, label: {
+                
                     Text("Log In").foregroundColor(.white)
                         .fontWeight(.bold)
-                })   .frame(width: Screen.maxWidth*0.9, height: Screen.maxHeight*0.05, alignment: .center)
-                .background(Color.blue)
-                .cornerRadius(8.0)
-                }
+                        .frame(width: Screen.maxWidth*0.9, height: Screen.maxHeight*0.05, alignment: .center)
+                        .background(Color.blue)
+                        .disabled(self.currentUser.email.isEmpty || self.currentUser.email.isEmpty)
+                        .opacity(self.currentUser.email.isEmpty || self.currentUser.email.isEmpty ? 0.5 : 1)
+                       
+                        .cornerRadius(8.0)
+                        .onTapGesture {
+                            currentUser.logIn()
+                        }
+            
                 HStack{
                     Text("Forget your login details?")
                         .font(.system(size: 14))
@@ -87,6 +88,7 @@ struct LoginScreenView: View {
         
         }
         }.navigationBarHidden(true)
+        .overlay( LoadingScreen().opacity(self.currentUser.isLoading ? 1 : 0).ignoresSafeArea())
         
         }
     }

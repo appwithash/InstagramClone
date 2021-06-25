@@ -129,6 +129,7 @@ struct EnterEmail : View{
                     .cornerRadius(8.0)
                     .onTapGesture {
                         newUser.signIn()
+                        
                     }
             Spacer()
             Spacer()

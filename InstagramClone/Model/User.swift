@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseFirestore
+import  Firebase
 class User : ObservableObject{
     @Published var username : String = ""
     @Published var password : String = ""
@@ -24,6 +25,18 @@ class User : ObservableObject{
     @Published var isLoading : Bool = false
     @Published var status : Bool = false
     
+    func logIn(){
+        self.isLoading=true
+        Auth.auth().signIn(withEmail: self.email, password: self.password) { (result, error) in
+            if error != nil{
+                print(error!.localizedDescription)
+            }else{
+                self.status=true
+                self.isLoading=false
+            }
+        }
+    }
+    
     func signIn(){
         let db = Firestore.firestore()
         self.isLoading=true
@@ -38,7 +51,15 @@ class User : ObservableObject{
                 print(error!.localizedDescription)
             }else{
                 self.isLoading=false
+                
+                Auth.auth().createUser(withEmail: self.email, password: self.password) { (result, error) in
+                    if error != nil{
+                        print(error!.localizedDescription)
+                    }
+                }
+                
                 self.status=true
+                
             }
         }
     }

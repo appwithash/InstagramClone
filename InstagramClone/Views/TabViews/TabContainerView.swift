@@ -8,14 +8,19 @@
 import SwiftUI
 
 struct TabContainerView: View {
+    @Binding var selectedIndex: Int
+    @State var viewState = CGSize.zero
     var body: some View {
-        CustomTabBar()
+        CustomTabBar(selectedIndex: $selectedIndex)
+           
     }
 }
 
 struct CustomTabBar : View{
-    @State var selectedIndex: Int = 0
+    @Binding var selectedIndex: Int
     @State var shouldShowModal : Bool = false
+   
+ //   @Binding var isCamera : Bool
     var body: some View{
         VStack(spacing:0){
             NavigationView{
@@ -76,12 +81,14 @@ struct CustomTabBar : View{
                 })
                 
             }
-            .frame(height: Screen.maxHeight*0.02, alignment: .center)
+            .frame(height: Screen.maxHeight*0.03, alignment: .center)
             .shadow(radius: 10)
             .padding()
-            .ignoresSafeArea()
+            .padding(.bottom)
+            .cornerRadius(20)
+          
         
-        }
+        } .background(Color.white)
     }
 }
 
@@ -105,6 +112,6 @@ struct AddButton : View{
 
 struct TabContainerView_Previews: PreviewProvider {
     static var previews: some View {
-        TabContainerView()
+        TabContainerView(selectedIndex: .constant(0))
     }
 }
