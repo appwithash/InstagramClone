@@ -14,9 +14,12 @@ struct InstagramCloneApp: App {
     @State var selectedIndex: Int = 0
     @State var isCamera = false
     @State var viewState = CGSize.zero
+    @AppStorage("logStatus") var loginStatus = false
+    
     var body: some Scene {
         WindowGroup {
-            if currentUser.status{
+            NavigationView{
+            if  loginStatus{
 
                 ZStack{
                    
@@ -46,7 +49,9 @@ struct InstagramCloneApp: App {
                             }
                         })
                      
-                    TabContainerView(selectedIndex: $selectedIndex).ignoresSafeArea(.all).environmentObject(currentUser).background(Color.white)
+                    TabContainerView(selectedIndex: $selectedIndex)
+                     
+                        .ignoresSafeArea(.all).environmentObject(currentUser).background(Color.white)
                         .offset(x: viewState.width)
                         .animation(.default)
                         .highPriorityGesture(
@@ -81,6 +86,7 @@ struct InstagramCloneApp: App {
                       
             }else{
                 LoginScreenView().environmentObject(currentUser)
+            }
             }
         }
     }

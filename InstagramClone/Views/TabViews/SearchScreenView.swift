@@ -69,22 +69,22 @@ struct SearchViewPostFeed : View{
     private var gridItem = [GridItem(.fixed(Screen.maxWidth*0.315)),GridItem(.fixed(Screen.maxWidth*0.315)),GridItem(.fixed(Screen.maxWidth*0.315))]
     
     var searchViewPostFeedList : [Post] = [
-        Post(username: "sakshi", postName: "image1", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image2", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image3", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image4", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image5", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image6", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image7", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image8", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image9", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image10", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "natasha", postName: "post1", location: "canada", profilePicture: "post1",isLiked:false, likesCount: 100),
-        Post(username: "steverogers", postName: "post2", location: "america", profilePicture: "post2",isLiked:false, likesCount: 300),
-        Post(username: "tonystark", postName: "post3", location: "canada", profilePicture: "post3",isLiked:false, likesCount: 3000),
-        Post(username: "thor", postName: "post4", location: "canada", profilePicture: "post5", isLiked:false,likesCount: 100),
-        Post(username: "hulk", postName: "post5", location: "canada", profilePicture: "post5", isLiked:false,likesCount: 100),
-        Post(username: "hawkaye", postName: "post6", location: "canada", profilePicture: "post6", isLiked:false,likesCount: 100),
+        Post(username: "sakshi", postImage: Image("image1"), location: "dehradun", profileImage: Image("image1"), isLiked: false, likesCount: 100),
+        Post(username: "sakshi", postImage:  Image("image2"), location: "dehradun", profileImage:  Image("image1"), isLiked: false, likesCount: 100),
+        Post(username: "sakshi", postImage:  Image("image3"), location: "dehradun", profileImage:  Image("image1"), isLiked: false, likesCount: 100),
+        Post(username: "sakshi", postImage:  Image("image4"), location: "dehradun", profileImage: Image("image1"), isLiked: false, likesCount: 100),
+        Post(username: "sakshi", postImage:  Image("image5"), location: "dehradun", profileImage: Image("image1"), isLiked: false, likesCount: 100),
+        Post(username: "sakshi", postImage:  Image("image6"), location: "dehradun", profileImage: Image("image1"), isLiked: false, likesCount: 100),
+        Post(username: "sakshi", postImage:  Image("image7"), location: "dehradun", profileImage:Image("image1"), isLiked: false, likesCount: 100),
+        Post(username: "sakshi", postImage:  Image("image8"), location: "dehradun", profileImage: Image("image1"), isLiked: false, likesCount: 100),
+        Post(username: "sakshi", postImage:  Image("image9"), location: "dehradun", profileImage: Image("image1"), isLiked: false, likesCount: 100),
+        Post(username: "sakshi", postImage:  Image("image10"), location: "dehradun", profileImage: Image("image1"), isLiked: false, likesCount: 100),
+        Post(username: "natasha", postImage: Image("post1"), location: "canada", profileImage: Image("image1"),isLiked:false, likesCount: 100),
+        Post(username: "steverogers", postImage: Image("post2"), location: "america", profileImage: Image("image1"),isLiked:false, likesCount: 300),
+        Post(username: "tonystark", postImage: Image("post3"), location: "canada", profileImage: Image("image1"),isLiked:false, likesCount: 3000),
+        Post(username: "thor", postImage: Image("post4"), location: "canada", profileImage: Image("image1"), isLiked:false,likesCount: 100),
+        Post(username: "hulk", postImage: Image("post5"), location: "canada", profileImage: Image("image1"), isLiked:false,likesCount: 100),
+        Post(username: "hawkaye", postImage: Image("post6"), location: "canada", profileImage: Image("image1"), isLiked:false,likesCount: 100),
     ]
     
     struct SearchViewPostCell : View{
@@ -92,7 +92,7 @@ struct SearchViewPostFeed : View{
         var index : Int
         var body : some View{
             Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
-                Image(post.postName)
+                post.postImage
                     .resizable()
                     .scaledToFill()
                     .frame(width: Screen.maxWidth*0.325, height: Screen.maxWidth*0.325, alignment: .center)

@@ -8,10 +8,15 @@
 import SwiftUI
 
 struct TabContainerView: View {
+    @AppStorage("currentUser") var currentUserEmail = ""
+    
+    @EnvironmentObject var currentUser : User
     @Binding var selectedIndex: Int
     @State var viewState = CGSize.zero
     var body: some View {
-        CustomTabBar(selectedIndex: $selectedIndex)
+        CustomTabBar(selectedIndex: $selectedIndex)  .onAppear{
+            currentUser.setUp( currentUserEmail: self.currentUserEmail)
+        }
            
     }
 }
@@ -27,7 +32,7 @@ struct CustomTabBar : View{
             switch selectedIndex{
             case 0:HomeScreenView()
             case 1 : SearchScreenView()
-            case 2 :SearchScreenView()
+            case 2 :ReelsView()
             case 3:NotificationView()
             case 4:ProfileView()
             default : SearchScreenView()
@@ -39,7 +44,7 @@ struct CustomTabBar : View{
                     selectedIndex = 0
                 }, label: {
                     Image(systemName: selectedIndex==0 ? "house.fill" : "house")
-                        .font(.system(size: 20))
+                        .font(.system(size: 22))
                         .foregroundColor(selectedIndex==0 ? .black : .gray)
                       
                     
@@ -49,7 +54,7 @@ struct CustomTabBar : View{
                     selectedIndex = 1
                 }, label: {
                     Image(systemName: "magnifyingglass")
-                        .font(.system(size: 20))
+                        .font(.system(size: 22))
                         .foregroundColor(selectedIndex==1 ? .black : .gray)
                      
                 })
@@ -57,8 +62,37 @@ struct CustomTabBar : View{
                 Button(action: {
                     selectedIndex = 0
                 }, label: {
-                    AddButton()
-                        .shadow(radius: 20)
+                    ZStack{
+            
+                        RoundedRectangle(cornerRadius: Screen.maxWidth*0.02)
+                            .stroke(lineWidth: 2)
+                            .frame(width: Screen.maxWidth*0.06, height: Screen.maxWidth*0.06, alignment: .center)
+                        VStack(spacing:1){
+                            ZStack{
+                            Capsule()
+                                .frame(width: Screen.maxWidth*0.065, height: 3, alignment: .center)
+                                .padding(.bottom,2)
+                                HStack{
+                                    Capsule()
+                                        .frame(width: 8, height: 3, alignment: .center)
+                                        .rotationEffect(.degrees(45))
+                                        .offset(x:4)
+                                    Capsule()
+                                        .frame(width: 8, height: 3, alignment: .center)
+                                        .rotationEffect(.degrees(45))
+                                        .offset(x:-2)
+                                }.offset(y:-4)
+                            }
+                        Image(systemName: "play.fill")
+                            .resizable()
+                            .frame(width: 9, height: 9, alignment: .center)
+                            .offset(y:-1)
+                        }
+                    }
+                    .accentColor(self.selectedIndex==2  ? Color.black : Color.gray)
+                    .onTapGesture {
+                        self.selectedIndex=2
+                    }
                 })
 
                 Spacer()
@@ -66,7 +100,7 @@ struct CustomTabBar : View{
                     selectedIndex = 3
                 }, label: {
                     Image(systemName: selectedIndex==3 ? "heart.fill" : "heart")
-                        .font(.system(size: 20))
+                        .font(.system(size: 22))
                         .foregroundColor(selectedIndex==3 ? .black : .gray)
                        
                 })
@@ -75,37 +109,24 @@ struct CustomTabBar : View{
                     selectedIndex = 4
                 }, label: {
                     Image(systemName: selectedIndex==4 ? "person.fill" : "person")
-                        .font(.system(size: 20))
+                        .font(.system(size: 22))
                         .foregroundColor(selectedIndex==4 ? .black : .gray)
                        
                 })
                 
             }
-            .frame(height: Screen.maxHeight*0.03, alignment: .center)
+            .frame(height: Screen.maxHeight*0.025, alignment: .center)
             .shadow(radius: 10)
             .padding()
+            .padding(.leading)
+            .padding(.trailing)
             .padding(.bottom)
             .cornerRadius(20)
           
         
         } .background(Color.white)
+          
     }
-}
-
-struct AddButton : View{
-    let colors = Gradient(colors: [Color("cream"),Color("pink"),Color("purple"),Color("blue")])
-    var body : some View{
-        ZStack{
-        Circle()
-            .fill(LinearGradient(gradient: colors,startPoint: .bottom,endPoint: .topTrailing))
-            .frame(width: Screen.maxWidth*0.16, height: Screen.maxWidth*0.16, alignment: .center)
-        Image(systemName: "plus")
-                .resizable().frame(width: Screen.maxWidth*0.05, height: Screen.maxWidth*0.05, alignment: .center)
-                .accentColor(.white)
-        }
-    }
-    
-    
 }
 
 

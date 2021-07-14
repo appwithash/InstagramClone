@@ -9,7 +9,8 @@ import SwiftUI
 
 struct LoginScreenView: View {
     @EnvironmentObject var currentUser : User
-    
+    @State var showSigninScreen=false
+   
     var body: some View {
         ZStack{
         NavigationView{
@@ -40,14 +41,14 @@ struct LoginScreenView: View {
                     .padding()
                     .frame(width: Screen.maxWidth*0.9, height: Screen.maxHeight*0.05, alignment: .center)
                 }
-                
+                    
                     Text("Log In").foregroundColor(.white)
                         .fontWeight(.bold)
                         .frame(width: Screen.maxWidth*0.9, height: Screen.maxHeight*0.05, alignment: .center)
                         .background(Color.blue)
                         .disabled(self.currentUser.email.isEmpty || self.currentUser.email.isEmpty)
                         .opacity(self.currentUser.email.isEmpty || self.currentUser.email.isEmpty ? 0.5 : 1)
-                       
+
                         .cornerRadius(8.0)
                         .onTapGesture {
                             currentUser.logIn()
@@ -79,10 +80,23 @@ struct LoginScreenView: View {
                 HStack{
                 Text("Didn't have an account?")
                     .foregroundColor(.gray) .font(.system(size: 14))
-                    NavigationLink(destination: SignInScreenView()) {
+                  NavigationLink(
+                    destination: SignInScreenView(),
+                    isActive : $showSigninScreen,
+                    label: {
                         Text("Sign up").bold().foregroundColor(.black).font(.system(size: 14))
-                    
-                    }
+                            .onTapGesture {
+                                self.showSigninScreen.toggle()
+                            }
+                    })
+//                    Text("Sign up").bold().foregroundColor(.black).font(.system(size: 14))
+//                        .onTapGesture {
+//                            self.showSigninScreen.toggle()
+//                        }
+//                       .fullScreenCover(isPresented: $showSigninScreen){
+//                        SignInScreenView()
+//
+//                       }
                 }
             }
         
@@ -96,6 +110,6 @@ struct LoginScreenView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginScreenView()
+        LoginScreenView().environmentObject(User())
     }
 }

@@ -8,13 +8,15 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @EnvironmentObject var currentUser : User
     var body: some View {
-        ProfileCell(myProfile: PersonProfile(username: "steverogers", fullName: "Steve Rogers", bio: "captain America", postCount: 20, followersCount: 10, followingCount: 32, backgroundImage: "image5", profileImage: "image1", myPostList: ["image1","image2","image3"]))
+        ProfileCell(myProfile: PersonProfile(username: self.currentUser.username, fullName: self.currentUser.fullName, bio: self.currentUser.bio, postCount: self.currentUser.postCount, followersCount: self.currentUser.followerCount, followingCount: self.currentUser.followingCount, backgroundImage: "image5", profileImage: "image1", myPostList: ["image1","image2","image3"]))
     }
 }
 
 struct ProfileCell : View{
     let myProfile : PersonProfile
+    @State var editProfile = false
     @State private var selectedTab = 0
     var body : some View{
         VStack{
@@ -41,17 +43,17 @@ struct ProfileCell : View{
                 Spacer()
                     Spacer()
                     VStack{
-                    Text("\(myProfile.postCount)").font(.system(size: 14)).bold()
+                    Text("\(myProfile.postCount)").font(.system(size: 18)).bold()
                         Text("Posts").font(.system(size: 14)).bold()
                     }
                     Spacer()
                     VStack{
-                    Text("\(myProfile.followersCount)").font(.system(size: 14)).bold()
+                    Text("\(myProfile.followersCount)").font(.system(size: 18)).bold()
                         Text("Followers").font(.system(size: 14)).bold()
                     }
                     Spacer()
                     VStack{
-                    Text("\(myProfile.followingCount)").font(.system(size: 14)).bold()
+                    Text("\(myProfile.followingCount)").font(.system(size: 18)).bold()
                         Text("Following").font(.system(size: 14)).bold()
                     }
                     Spacer()
@@ -61,20 +63,21 @@ struct ProfileCell : View{
                 Text(myProfile.bio).font(.system(size: 14)).padding(.bottom,Screen.maxWidth*0.1)
             }.padding(.trailing,250)
             Spacer()
-        //    HStack{
-                Button(action: {
-                    
-                }, label: {
-                    ZStack{
-                        RoundedRectangle(cornerRadius: 10).stroke(Color("gray2"),lineWidth:1)
-                    Text("Edit Profile").font(.system(size: 14))
-                        .foregroundColor(.black)
-                       
-                    }.frame(width: Screen.maxWidth*0.9, height: Screen.maxHeight*0.04, alignment: .center)
-                })
-          //  }
-          
-        //    Divider()
+    
+                ZStack{
+                    RoundedRectangle(cornerRadius: 10).stroke(Color("gray2"),lineWidth:1)
+                Text("Edit Profile").font(.system(size: 14))
+                    .foregroundColor(.black)
+                   
+                   
+                }.frame(width: Screen.maxWidth*0.9, height: Screen.maxHeight*0.035, alignment: .center)
+                    .fullScreenCover(isPresented: $editProfile, content: {
+                        EditProfileView()
+                    })
+                    .onTapGesture {
+                        self.editProfile.toggle()
+                    }
+                   
             ZStack{
             HStack{
               
@@ -118,23 +121,15 @@ struct ProfileCell : View{
 }
 //MARK: - MyPosts
 struct MyPosts : View {
+    @EnvironmentObject var currentUser : User
     private var gridItem = [GridItem(.fixed(Screen.maxWidth*0.315)),GridItem(.fixed(Screen.maxWidth*0.315)),GridItem(.fixed(Screen.maxWidth*0.315))]
     
     
-    var myPostList : [Post] = [
-        Post(username: "sakshi", postName: "image10", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image9", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image8", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image7", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image5", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image6", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image5", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image2", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "post4", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100)]
+   
     var body : some View{
         ScrollView(.vertical, showsIndicators: false){
             LazyVGrid(columns: gridItem,spacing:1){
-            ForEach(myPostList){post in
+                ForEach(self.currentUser.userPostList){post in
             PostGridCell(post: post)
         }
         }
@@ -147,7 +142,7 @@ struct PostGridCell : View{
     //var index : Int
     var body : some View{
         Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
-            Image(post.postName)
+            post.postImage
                 .resizable()
                 .scaledToFill()
                 .frame(width: Screen.maxWidth*0.325, height: Screen.maxWidth*0.325, alignment: .center)
@@ -159,18 +154,13 @@ struct PostGridCell : View{
 //MARK: - TaggedPosts
 struct TaggedPosts : View {
     private var gridItem = [GridItem(.fixed(Screen.maxWidth*0.315)),GridItem(.fixed(Screen.maxWidth*0.315)),GridItem(.fixed(Screen.maxWidth*0.315))]
+    @EnvironmentObject var currentUser : User
     
-    var taggedPostList : [Post] = [
-        Post(username: "sakshi", postName: "post2", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "post4", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image10", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image8", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        Post(username: "sakshi", postName: "image5", location: "dehradun", profilePicture: "image1", isLiked: false, likesCount: 100),
-        ]
     var body : some View{
+        
         ScrollView(.vertical, showsIndicators: false){
             LazyVGrid(columns: gridItem,spacing:1){
-            ForEach(taggedPostList){post in
+                ForEach(self.currentUser.userTaggedPostList){post in
                 PostGridCell(post: post)
         }
         }
@@ -195,6 +185,6 @@ struct PersonProfile : Identifiable{
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileView()
+        ProfileView().environmentObject(User())
     }
 }

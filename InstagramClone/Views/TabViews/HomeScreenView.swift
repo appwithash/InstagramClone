@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HomeScreenView: View {
-    
+  
     var body: some View {
         VStack{
             TopBar()
@@ -23,6 +23,7 @@ struct HomeScreenView: View {
 
 //MARK: - TopBar Section
 struct TopBar : View{
+    @State var onAddPostClicked = false
     var body : some View{
         HStack{
            
@@ -36,6 +37,13 @@ struct TopBar : View{
                 Image(systemName: "plus")  .font(.system(size: 16))
                     .accentColor(.black)
             }.padding(.trailing,20)
+                .onTapGesture {
+                    self.onAddPostClicked.toggle()
+                }
+                .fullScreenCover(isPresented: $onAddPostClicked){
+                    SelectImageToPostView()
+                   
+                }
             Button(action: {}, label: {
                     Image(systemName: "paperplane")
                     .font(.system(size: 20))
@@ -84,12 +92,7 @@ struct FirstStoryCellContent : View{
 }
 
 
-struct Story : Identifiable{
-    var id = UUID()
-    var username : String
-    let profilePicture : String
-    let storyContent : String
-}
+
 struct StoryView : View{
     private var storiesList : [Story] = [
         Story(username: "Your story", profilePicture:"image2", storyContent: "post2"),
@@ -119,20 +122,10 @@ struct StoryView : View{
 //MARK: - Post Section
 
 struct PostView : View{
-    private var postList : [Post] = [
-        Post(username: "natasha", postName: "image1", location: "canada", profilePicture: "post1",isLiked:false, likesCount: 100),
-        Post(username: "steverogers", postName: "post2", location: "america", profilePicture: "post2",isLiked:true, likesCount: 300),
-        Post(username: "tonystark", postName: "post3", location: "canada", profilePicture: "post3",isLiked:false, likesCount: 3000),
-        Post(username: "thor", postName: "post4", location: "canada", profilePicture: "post5", isLiked:true,likesCount: 100),
-        Post(username: "hulk", postName: "post5", location: "canada", profilePicture: "post5", isLiked:false,likesCount: 100),
-        Post(username: "hawkaye", postName: "post6", location: "canada", profilePicture: "post6", isLiked:true,likesCount: 100),
-    ]
-    
-   
-    
+    @EnvironmentObject var currentUser : User
     var body: some View{
         VStack{
-            ForEach(postList){post in
+            ForEach(self.currentUser.userPostList){post in
                 PostCellContent(post: post).padding(.bottom,10)
             }
         }
@@ -146,7 +139,7 @@ struct PostCellContent: View {
     var body : some View{
         VStack{
             HStack(alignment:.top,spacing:10){
-                Image(post.profilePicture)
+                post.profileImage
                     .resizable()
                     .frame(width: Screen.maxWidth*0.1, height:Screen.maxWidth*0.1,alignment: .trailing)
                     .scaledToFit()
@@ -169,7 +162,7 @@ struct PostCellContent: View {
             }
         
             ZStack{
-            Image(post.postName)
+                post.postImage
                 .resizable()
                 .scaledToFill()
                 .frame(width: Screen.maxWidth*0.96, height: Screen.maxWidth*0.96, alignment: .center)
@@ -256,25 +249,7 @@ struct PostCellContent: View {
 }
 
 
-class Post : Identifiable,ObservableObject{
-    var id = UUID()
-    var username : String
-    var postName : String
-    var location : String
-    var profilePicture : String
-    @Published var isLiked : Bool
-   @Published var likesCount : Int
-    
-    init(username : String,postName:String,location : String,profilePicture:String,isLiked:Bool,likesCount:Int) {
-        self.username=username
-        self.postName=postName
-        self.location=location
-        self.profilePicture=profilePicture
-        self.isLiked=isLiked
-        self.likesCount=likesCount
-    }
 
-}
 
 //MARK: - Preview HomeScreenView
 struct HomeScreenView_Previews: PreviewProvider {
