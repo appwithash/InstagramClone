@@ -82,9 +82,7 @@ class User : ObservableObject,Codable{
                 self.status=true
                 self.isLoading=false
                 self.loginStatus=true
-//                DispatchQueue.main.async {
-//                    self.setUserDetails(email: self.email)
-//                }
+
             }
         }
     }
