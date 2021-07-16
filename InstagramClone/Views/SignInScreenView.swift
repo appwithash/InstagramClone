@@ -55,8 +55,9 @@ struct CreateUsername : View{
                               .background(Color.blue)
                               .cornerRadius(8.0)
                               .onTapGesture {
+                                print("username : \(newUser.username)")
                                 self.goToPasswordScreen.toggle()
-                                  print("username : \(newUser.username)")
+                               
                               }
                         })
                             .disabled(self.newUser.username.isEmpty)
@@ -71,6 +72,7 @@ struct CreatePassword : View{
     @EnvironmentObject var newUser :User
     @Environment(\.presentationMode) var presentable
     @State var showPassword = false
+    @State var goToEmailScreen = false
     var body: some View{
         VStack(spacing:10){
             Image(systemName: "plus")
@@ -105,12 +107,17 @@ struct CreatePassword : View{
            CheckBoxView(checked: $showPassword)
             NavigationLink(
                 destination: EnterEmail(),
+                isActive: $goToEmailScreen,
                label: {
                 Text("next").foregroundColor(.white)
                     .fontWeight(.bold)
                     .frame(width: Screen.maxWidth*0.9, height: Screen.maxHeight*0.05, alignment: .center)
                     .background(Color.blue)
                     .cornerRadius(8.0)
+                    .onTapGesture {
+                        self.goToEmailScreen.toggle()
+                        print("PASSWORD : \(newUser.password)")
+                    }
                     
             }).disabled(self.newUser.password.isEmpty).opacity(self.newUser.password.isEmpty ? 0.5 : 1)
             Spacer()
@@ -144,6 +151,7 @@ struct EnterEmail : View{
                     .background(Color.blue)
                     .cornerRadius(8.0)
                     .onTapGesture {
+                        print("EMAIL : \(newUser.email)")
                         newUser.signIn()
                     }
             Spacer()

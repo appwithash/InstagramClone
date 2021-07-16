@@ -8,14 +8,18 @@
 import SwiftUI
 
 struct TabContainerView: View {
-    @AppStorage("currentUser") var currentUserEmail = ""
-    
+    @AppStorage("currentUser") var currentEmail = ""
+ 
     @EnvironmentObject var currentUser : User
     @Binding var selectedIndex: Int
     @State var viewState = CGSize.zero
     var body: some View {
-        CustomTabBar(selectedIndex: $selectedIndex)  .onAppear{
-            currentUser.setUp( currentUserEmail: self.currentUserEmail)
+        CustomTabBar(selectedIndex: $selectedIndex)
+            .environmentObject(currentUser)
+            .overlay( LoadingScreen().opacity(self.currentUser.isLoading ? 1 : 0).ignoresSafeArea())
+            .onAppear{
+             //   print(self.currentEmail)
+                currentUser.setUserDetails( email: self.currentEmail)
         }
            
     }
@@ -24,8 +28,6 @@ struct TabContainerView: View {
 struct CustomTabBar : View{
     @Binding var selectedIndex: Int
     @State var shouldShowModal : Bool = false
-   
- //   @Binding var isCamera : Bool
     var body: some View{
         VStack(spacing:0){
             NavigationView{

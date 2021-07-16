@@ -6,17 +6,18 @@
 //
 
 import SwiftUI
-
 struct HomeScreenView: View {
-  
+    @EnvironmentObject var currentUser : User
     var body: some View {
         VStack{
             TopBar()
             ScrollView{
-            StoryView()
-            PostView()
+                StoryView().redacted(reason:self.currentUser.isLoadingHomeScreen ? .placeholder : [])
+                PostView().redacted(reason:self.currentUser.isLoadingHomeScreen ? .placeholder : [])
             }
         }.navigationBarHidden(true)
+
+      
       
     }
 }
@@ -74,7 +75,6 @@ struct FirstStoryCellContent : View{
         VStack{
             ZStack{
             StoryGradient(image: story.profilePicture)
-
                 ZStack{
                     Circle().frame(width: 20, height: 20, alignment: .center).foregroundColor(.blue)
                     Image(systemName: "plus")
@@ -108,7 +108,7 @@ struct StoryView : View{
             HStack{
                 ForEach(0..<storiesList.count){  index in
                     if(index==0){
-                        FirstStoryCellContent(story: storiesList[index]).padding(.trailing,10)
+                        FirstStoryCellContent(story: storiesList[index]).padding(.trailing,10).unredacted()
                     }else{
                         StoryCellContent(story: storiesList[index]).padding(.trailing,10)
                     }
@@ -125,7 +125,7 @@ struct PostView : View{
     @EnvironmentObject var currentUser : User
     var body: some View{
         VStack{
-            ForEach(self.currentUser.userPostList){post in
+            ForEach(self.currentUser.userHomeFeed){post in
                 PostCellContent(post: post).padding(.bottom,10)
             }
         }
@@ -136,6 +136,7 @@ struct PostCellContent: View {
     @StateObject var post : Post
     @State private var onLikevisiblity = false
     @State private var isFirstDoubleTapped = true
+    @State var goToComments = false
     var body : some View{
         VStack{
             HStack(alignment:.top,spacing:10){
@@ -216,14 +217,21 @@ struct PostCellContent: View {
                     
                     
                 })
-                Button(action: {}, label: {
+                NavigationLink(
+                    destination:CommentView(post: post),
+                    isActive:$goToComments
+                ){
+                Button(action: {
+                    self.goToComments=true
+                }, label: {
                     Image(systemName: "message").font(.system(size: 20))
                         .accentColor(.black)
-                      
+                    
                 })  .padding(.leading,Screen.maxWidth*0.01)
+                }
                 Button(action: {}, label: {
                     Image(systemName: "paperplane").font(.system(size: 20))
-                        .accentColor(.black).rotationEffect(.degrees(22.5))
+                        .accentColor(.black)//.rotationEffect(.degrees(22.5))
                 })  .padding(.leading,Screen.maxWidth*0.01)
                 Spacer()
                 Button(action: {}, label: {
@@ -254,7 +262,7 @@ struct PostCellContent: View {
 //MARK: - Preview HomeScreenView
 struct HomeScreenView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeScreenView()
+        HomeScreenView().environmentObject(User())
     }
 }
 

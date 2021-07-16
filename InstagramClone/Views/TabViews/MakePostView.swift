@@ -11,6 +11,7 @@ struct MakePostView: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var currentUser : User
     @Binding var image : Image!
+    @Binding var uiImage : UIImage!
     @State var caption = ""
     @State var shareOnFacebook = false
     @State var shareOnTwitter = false
@@ -29,15 +30,7 @@ struct MakePostView: View {
             Spacer()
             Text("Share").foregroundColor(.blue).padding(.trailing)
                 .onTapGesture {
-                    print("postcount=\(currentUser.userPostList)")
-                    newPost.likesCount = 0
-                    newPost.isLiked=false
-                    newPost.location="dehradun"
-                    newPost.username=currentUser.username
-                    newPost.profileImage=currentUser.profilePicture
-                    newPost.postImage = image
-                    self.currentUser.userPostList.append(newPost)
-                    print("postcount=\(currentUser.userPostList)")
+                    self.currentUser.create(for: uiImage)
                     presentationMode.wrappedValue.dismiss()
                 }
         }
@@ -114,6 +107,6 @@ struct MakePostView: View {
 
 struct MakePostView_Previews: PreviewProvider {
     static var previews: some View {
-        MakePostView(image: .constant(Image("post1")))
+        MakePostView(image: .constant(Image("post1")), uiImage: .constant(UIImage(systemName: "person")))
     }
 }

@@ -9,11 +9,10 @@ import SwiftUI
 
 struct StoryGradient: View {
     var image:String
-    let colors = Gradient(colors: [Color("orange"),Color("cream"),Color("pink"),Color("purple"),Color("blue")])
     var body: some View {
         ZStack{
         Circle()
-            .stroke(LinearGradient(gradient: colors,startPoint: .bottom,endPoint: .topTrailing),lineWidth: 4)
+            .stroke(LinearGradient(gradient: Gradient(colors: [Color("orange"),Color("cream"),Color("pink"),Color("purple"),Color("blue")]),startPoint: .bottom,endPoint: .topTrailing),lineWidth: 4)
             .frame(width: Screen.maxWidth*0.17, height: Screen.maxWidth*0.17, alignment: .center)
             Image(image).resizable()
                 .scaledToFill()

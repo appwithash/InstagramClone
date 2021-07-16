@@ -50,7 +50,6 @@ struct InstagramCloneApp: App {
                         })
                      
                     TabContainerView(selectedIndex: $selectedIndex)
-                     
                         .ignoresSafeArea(.all).environmentObject(currentUser).background(Color.white)
                         .offset(x: viewState.width)
                         .animation(.default)
