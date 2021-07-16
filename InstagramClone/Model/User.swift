@@ -34,12 +34,12 @@ class User : ObservableObject,Codable{
     @Published var userPostURLString = ""
     
     @Published var userHomeFeed : [Post] = [
-                                            Post(username: "natasha", postImage: Image("image1"), location: "canada", profileImage: Image("post1"),isLiked:false, likesCount: 100),
-                                            Post(username: "steverogers", postImage: Image("post2"), location: "america",profileImage: Image("post2"),isLiked:true, likesCount: 300),
-                                            Post(username: "tonystark", postImage:  Image("post3"), location: "canada",profileImage: Image("post3"),isLiked:false, likesCount: 3000),
-                                            Post(username: "thor", postImage:  Image("post4"), location: "canada", profileImage: Image("post4"), isLiked:true,likesCount: 100),
-                                            Post(username: "hulk", postImage:  Image("post5"), location: "canada",profileImage: Image("post5"), isLiked:false,likesCount: 100),
-                                            Post(username: "hawkaye", postImage:  Image("post6"), location: "canada",profileImage:Image("post6"), isLiked:true,likesCount: 100),
+        Post(username: "natasha", postImage: Image("image1"), location: "canada", profileImage: Image("post1"),isLiked:false, likesCount: 100, postEmail: ""),
+                                            Post(username: "steverogers", postImage: Image("post2"), location: "america",profileImage: Image("post2"),isLiked:true, likesCount: 300, postEmail: ""),
+                                            Post(username: "tonystark", postImage:  Image("post3"), location: "canada",profileImage: Image("post3"),isLiked:false, likesCount: 3000, postEmail: ""),
+                                            Post(username: "thor", postImage:  Image("post4"), location: "canada", profileImage: Image("post4"), isLiked:true,likesCount: 100, postEmail: ""),
+                                            Post(username: "hulk", postImage:  Image("post5"), location: "canada",profileImage: Image("post5"), isLiked:false,likesCount: 100, postEmail: ""),
+                                            Post(username: "hawkaye", postImage:  Image("post6"), location: "canada",profileImage:Image("post6"), isLiked:true,likesCount: 100, postEmail: ""),
     ]
     @AppStorage("logStatus") var loginStatus = false
     @AppStorage("currentUser") var currentEmail = ""
@@ -90,7 +90,7 @@ class User : ObservableObject,Codable{
     
 
     func setUserDetails(email : String){
-        print(email)
+
         self.isLoadingHomeScreen=true
         let db = Firestore.firestore()
         let dbRef = db.collection("Users").document(email)
@@ -184,14 +184,15 @@ class User : ObservableObject,Codable{
     
     func addPostToFirebase(){
         let db = Firestore.firestore()
-        let myPost = Post(username: self.username, postImage: Image(systemName: "person"), location: "Dehradun", profileImage: self.profilePicture, isLiked: false, likesCount: 0, postNumber: self.count)
-        db.collection("Users/\(self.username)/myPostList").document("Post\(self.count)").setData([
+        let myPost = Post(username: self.username, postImage: Image(systemName: "person"), location: "Dehradun", profileImage: self.profilePicture, isLiked: false, likesCount: 0, postNumber: self.count, postEmail: self.currentEmail)
+        db.collection("Users/\(self.email)/myPostList").document("Post\(self.count)").setData([
             "username" : myPost.username,
             "location" : myPost.location,
             "postUrl" : self.userPostURLString,
             "isLiked" : myPost.isLiked,
             "likesCount" : myPost.likesCount,
             "postNumber" : self.count,
+            "postEmail" : myPost.postEmail
    
         ]){ error in
             if error != nil{
@@ -224,21 +225,22 @@ class User : ObservableObject,Codable{
     
     func postSetUp(){
         self.userHomeFeed=[
-            Post(username: "natasha", postImage: Image("image1"), location: "canada", profileImage: Image("post1"),isLiked:false, likesCount: 100, postNumber: 0),
-            Post(username: "steverogers", postImage: Image("post2"), location: "america",profileImage: Image("post2"),isLiked:true, likesCount: 300, postNumber: 0),
-            Post(username: "tonystark", postImage:  Image("post3"), location: "canada",profileImage: Image("post3"),isLiked:false, likesCount: 3000, postNumber: 0),
-            Post(username: "thor", postImage:  Image("post4"), location: "canada", profileImage: Image("post4"), isLiked:true,likesCount: 100, postNumber: 0),
-            Post(username: "hulk", postImage:  Image("post5"), location: "canada",profileImage: Image("post5"), isLiked:false,likesCount: 100, postNumber: 0),
-            Post(username: "hawkaye", postImage:  Image("post6"), location: "canada",profileImage:Image("post6"), isLiked:true,likesCount: 100, postNumber: 0),
+           Post(username: "natasha", postImage: Image("image1"), location: "canada", profileImage: Image("post1"),isLiked:false, likesCount: 100, postNumber: 0, postEmail: ""),
+            Post(username: "steverogers", postImage: Image("post2"), location: "america",profileImage: Image("post2"),isLiked:true, likesCount: 300, postNumber: 0, postEmail: ""),
+//            Post(username: "tonystark", postImage:  Image("post3"), location: "canada",profileImage: Image("post3"),isLiked:false, likesCount: 3000, postNumber: 0, postEmail: ""),
+//            Post(username: "thor", postImage:  Image("post4"), location: "canada", profileImage: Image("post4"), isLiked:true,likesCount: 100, postNumber: 0, postEmail: ""),
+//            Post(username: "hulk", postImage:  Image("post5"), location: "canada",profileImage: Image("post5"), isLiked:false,likesCount: 100, postNumber: 0, postEmail: ""),
+//            Post(username: "hawkaye", postImage:  Image("post6"), location: "canada",profileImage:Image("post6"), isLiked:true,likesCount: 100, postNumber: 0, postEmail: ""),
         ]
         self.userPostList=[]
         let db = Firestore.firestore()
         
-       db.collection("Users/\(self.username)/myPostList").getDocuments(){ (querySnapshot, err) in
+       db.collection("Users/\(self.email)/myPostList").getDocuments(){ (querySnapshot, err) in
             if let err = err {
                    print("ERROR IN GETTING DOCUMENT: \(err)")
             } else{
                 var totalPosts=0
+                self.userHomeFeed=[]
                 for document in querySnapshot!.documents {
                            totalPosts+=1
                             print("FINDED DOCUMENT \(document.documentID) => \(document.data())")
@@ -248,19 +250,21 @@ class User : ObservableObject,Codable{
                             let likesCount = document.get("likesCount") as! Int
                             let location = document.get("location") as! String
                             let postNumber = document.get("postNumber") as! Int
-                    DispatchQueue.main.async {
-                        self.userPostList.insert(Post(username: username, postImage:Image(systemName: "photo").fromURL(url: url), location: location, profileImage: self.profilePicture, isLiked: isLiked, likesCount: likesCount, postNumber: postNumber), at: 0)
-                        self.userHomeFeed.insert(Post(username: username, postImage:Image(systemName: "photo").fromURL(url: url), location: location, profileImage: self.profilePicture, isLiked: isLiked, likesCount: likesCount,postNumber: postNumber), at: 0)
-                        
-                        
+                            let postEmail = document.get("postEmail") as! String
+                    
+                //    DispatchQueue.main.async {
+                        self.userPostList.insert(Post(username: username, postImage:Image(systemName: "photo").fromURL(url: url), location: location, profileImage: self.profilePicture, isLiked: isLiked, likesCount: likesCount, postNumber: postNumber, postEmail: postEmail), at: 0)
+                        self.userHomeFeed.insert(Post(username: username, postImage:Image(systemName: "photo").fromURL(url: url), location: location, profileImage: self.profilePicture, isLiked: isLiked, likesCount: likesCount,postNumber: postNumber, postEmail: postEmail), at: 0)
+                //    }
                     }
-                    }
-                self.isLoadingHomeScreen=false
-                self.isLoading=false
                 self.postCount=totalPosts
              
             }
-            
+        self.isLoadingHomeScreen=false
+        self.isLoading=false
         }
+       
+       
     }
+    
 }

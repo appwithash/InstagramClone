@@ -36,15 +36,20 @@ struct SelectImageToPostView : View{
                     }
                     ZStack{
                         if image != nil{
-                            image?.resizable().scaledToFill()
+                            image?
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width:Screen.maxWidth,height: Screen.maxWidth*0.8)
                         }else{
                             RoundedRectangle(cornerRadius: 20)
+                                .frame(width:Screen.maxWidth,height: Screen.maxWidth*0.8)
                         }
                     }.onAppear{
                         if self.isImageSelected{
                             loadImage()
                         }
                     }
+                  
                     Spacer()
                     AddPostPickerView(inputImage: $inputImage, isImageSelected: $isImageSelected, image: $image).frame(height:Screen.maxHeight*0.5)
                 }.navigationBarHidden(true)

@@ -12,6 +12,7 @@ struct CommentView: View {
     @EnvironmentObject var currentUser : User
     @Environment(\.presentationMode) var presentationMode
     @State var myComment = ""
+    @ObservedObject var newComment = Comment(username: "", profileImage: Image("image1"), commentData: "")
     var body: some View {
         VStack{
             HStack{
@@ -43,7 +44,7 @@ struct CommentView: View {
                 ForEach(self.post.postComments){comment in
                     Commentcell(comment: comment)
                 }
-                  //  Spacer()
+                
                 }
             }
           
@@ -61,7 +62,10 @@ struct CommentView: View {
                         
                         Text("Post").foregroundColor(.blue).bold()
                             .onTapGesture {
-                                let newComment = Comment(username:currentUser.username,profileImage: self.currentUser.profilePicture, commentData: myComment)
+                              
+                                self.newComment.commentData = myComment
+                                self.newComment.username = currentUser.username
+                                self.newComment.profileImage = currentUser.profilePicture
                                 post.addCommentToFirebase(post: post, comment: newComment)
                                 self.post.postComments.insert(newComment, at: 0)
                                 self.myComment=""
@@ -71,6 +75,10 @@ struct CommentView: View {
                 .frame(width: Screen.maxWidth*0.78, height: Screen.maxWidth*0.12, alignment: .center)
             }
         }.navigationBarHidden(true)
+        .onAppear{
+            
+            self.post.fetchComments(post: post)
+        }
     }
 }
 
@@ -95,11 +103,12 @@ struct Commentcell : View{
             Spacer()
             Image(systemName: "heart").font(.system(size: 14))
         }.padding(.leading).padding(.trailing)
+      
     }
 }
 
 struct CommentView_Previews: PreviewProvider {
     static var previews: some View {
-        CommentView(post: Post(username: "ashutosh", postImage: Image("image1"), location: "dehradun", profileImage: Image("post1"), isLiked: false, likesCount: 10, postNumber: 0)).environmentObject(User())
+        CommentView(post: Post(username: "ashutosh", postImage: Image("image1"), location: "dehradun", profileImage: Image("post1"), isLiked: false, likesCount: 10, postNumber: 0, postEmail: "")).environmentObject(User())
     }
 }

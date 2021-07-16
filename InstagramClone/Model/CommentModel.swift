@@ -22,4 +22,12 @@ class Comment : Identifiable,ObservableObject{
         self.profileImage=profileImage
     }
   
+    init(username:String,profileImage:Image,commentData : String,timeOfcomment : String,commentLikesCount : Int) {
+        self.username = username
+        self.commentData=commentData
+        self.profileImage=profileImage
+        self.commentLikesCount=commentLikesCount
+        self.timeOfcomment=timeOfcomment
+    }
+  
 }
